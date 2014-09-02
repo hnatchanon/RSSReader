@@ -46,11 +46,16 @@ import model.Item;
 
 import view.RssReader;
 
+/**
+ * This is gui for rss reader and main class for this program.
+ * @author Natchanon Hongladaromp 5510546034
+ *
+ */
 public class RssReaderGui extends JFrame implements Runnable {
-	
+
 	private static final int UPDATE_DISCRIPTION = 0;
 	private static final int UPDATE_URL = 1;
-	
+
 	private JTextField url;
 	private RssReader rssReader;
 	private JTextPane desArea;
@@ -58,25 +63,31 @@ public class RssReaderGui extends JFrame implements Runnable {
 	private JList titleList;
 	private JTextPane link;
 	private JButton moreInfo;
-	
+
+	/**
+	 * Constructer for this class.
+	 */
 	public RssReaderGui() {
 		init();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 
+	/**
+	 * initialize method.
+	 */
 	private void init() {
 		JPanel pane = new JPanel();
 		pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 		pane.setBorder(new EmptyBorder(10, 10, 10, 10));
-		
+
 		JPanel head = new JPanel(new FlowLayout());
 		head.setBorder(BorderFactory.createLoweredBevelBorder());
-		
+
 		head.add(new JLabel("RSS URL: "));
-		
+
 		url = new JTextField(30);
 		url.addKeyListener(new KeyListener() {
-			
+
 			@Override
 			public void keyTyped(KeyEvent e) {}
 			@Override
@@ -89,10 +100,10 @@ public class RssReaderGui extends JFrame implements Runnable {
 			public void keyPressed(KeyEvent e) {}
 		});
 		head.add(url);
-		
+
 		JButton button = new JButton("Read");
 		button.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				submitUrl();
@@ -100,14 +111,14 @@ public class RssReaderGui extends JFrame implements Runnable {
 		});
 		head.add(button);
 		pane.add(head);
-		
+
 		JPanel body = new JPanel();
 		body.setLayout(new BoxLayout(body, BoxLayout.X_AXIS));
 		body.setBorder(BorderFactory.createLoweredBevelBorder());
-		
+
 		titleList = new JList();
 		titleList.addListSelectionListener(new ListSelectionListener() {
-			
+
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
 				item = (Item)(titleList.getSelectedValue());
@@ -119,10 +130,10 @@ public class RssReaderGui extends JFrame implements Runnable {
 		scroll1.setPreferredSize(new Dimension(250, 300));
 		scroll1.setAutoscrolls(true);
 		body.add(scroll1);
-		
+
 		JPanel left = new JPanel();
 		left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
-		
+
 		desArea = new JTextPane();
 		desArea.setPreferredSize(new Dimension(400, 0));
 		desArea.setContentType("text/html");
@@ -131,11 +142,11 @@ public class RssReaderGui extends JFrame implements Runnable {
 		scroll2.setPreferredSize(new Dimension(500, 250));
 		scroll2.setAutoscrolls(true);
 		left.add(scroll2);
-		
+
 		moreInfo = new JButton("More Information");
 		moreInfo.setAlignmentX( Component.LEFT_ALIGNMENT );
 		moreInfo.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				URL link;
@@ -145,17 +156,20 @@ public class RssReaderGui extends JFrame implements Runnable {
 				} catch (MalformedURLException | URISyntaxException e) {
 					JOptionPane.showMessageDialog(null, "Link Error!", "Link Error!", JOptionPane.ERROR_MESSAGE);
 				}
-				
+
 			}
 		});
 		moreInfo.setEnabled(false);
 		left.add(moreInfo);
-		
+
 		body.add(left);
 		pane.add(body);
 		this.add(pane);
 	}
-	
+
+	/**
+	 * To submit url.
+	 */
 	private void submitUrl() {
 		try {
 			rssReader = new RssReader(url.getText());
@@ -171,6 +185,10 @@ public class RssReaderGui extends JFrame implements Runnable {
 		this.setVisible(true);
 	}
 
+	/**
+	 * Updates this gui.
+	 * @param type
+	 */
 	public void update(int type) {
 		if(type == UPDATE_DISCRIPTION) {
 			desArea.setText(item.getDescription());
@@ -186,9 +204,14 @@ public class RssReaderGui extends JFrame implements Runnable {
 			}
 			titleList.setListData(array);
 		}
-			
+
 	}
-	
+
+	/**
+	 * Opens url in browser.
+	 * @param url url to open
+	 * @throws URISyntaxException
+	 */
 	private static void open(URL url) throws URISyntaxException {
 		if (Desktop.isDesktopSupported()) {
 			try {
@@ -196,14 +219,9 @@ public class RssReaderGui extends JFrame implements Runnable {
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(null, "Browser Error!", "Browser Error!", JOptionPane.ERROR_MESSAGE);
 			}  
-	    } 
+		} 
 		else {
-	    	JOptionPane.showMessageDialog(null, "Windows is not support.", "Windows is not support.", JOptionPane.ERROR_MESSAGE);
-	    }
-	  }
-	
-	public static void main(String[] args) {
-		RssReaderGui gui = new RssReaderGui();
-		gui.run();
+			JOptionPane.showMessageDialog(null, "Windows is not support.", "Windows is not support.", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }
